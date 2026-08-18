@@ -18,7 +18,7 @@ interface ChatPanelProps {
 const exampleQuestions = [
   'What is the current flood situation in this map view?',
   'Which communities appear most vulnerable and why?',
-  'What assistance and resource data are available here?',
+  'What FEMA and NFIP assistance data are available here?',
 ];
 
 export function ChatPanel({
@@ -39,9 +39,14 @@ export function ChatPanel({
     [aiConfig.provider],
   );
 
+  const providerReady =
+    selectedProvider.mode === 'hosted' ||
+    (Boolean(aiConfig.apiKey.trim()) && Boolean(aiConfig.modelId.trim()));
+  const canSend = previewMode || providerReady;
+
   const submit = async (value = question) => {
     const cleanQuestion = value.trim();
-    if (!cleanQuestion || loading) return;
+    if (!cleanQuestion || loading || !canSend) return;
     setQuestion('');
     await onAsk(cleanQuestion);
   };
@@ -61,9 +66,6 @@ export function ChatPanel({
       apiKey: '',
     });
   };
-
-  const providerReady =
-    selectedProvider.mode === 'hosted' || Boolean(aiConfig.apiKey.trim());
 
   return (
     <aside className="side-panel chat-panel" aria-label="AI assistant">
@@ -168,7 +170,7 @@ export function ChatPanel({
                   <div className="provider-privacy-note">
                     <span className="privacy-dot" />
                     <p>
-                      Session-only design: the key is held in browser memory and is not persisted by this frontend preview.
+                      Session-only BYOK: the key stays in browser memory, is sent only to the Vercel /api/chat request when you submit, and is not persisted by HazardWeave.
                     </p>
                   </div>
                 </>
@@ -179,7 +181,7 @@ export function ChatPanel({
                     <strong>HazardWeave research server</strong>
                   </div>
                   <p>
-                    The production Vercel API will route requests server-to-server to the hosted small-model endpoint. The server IP is never called directly by the browser.
+                    The Vercel API routes requests server-to-server to the hosted small-model endpoint. The server IP is never called directly by the browser.
                   </p>
                 </div>
               )}
@@ -196,7 +198,7 @@ export function ChatPanel({
 
       <div className="question-chips" aria-label="Example questions">
         {exampleQuestions.map((example) => (
-          <button key={example} type="button" onClick={() => void submit(example)}>
+          <button key={example} type="button" disabled={!canSend || loading} onClick={() => void submit(example)}>
             <SparklesIcon size={13} />
             <span>{example}</span>
           </button>
@@ -258,9 +260,11 @@ export function ChatPanel({
             <span>
               {previewMode
                 ? `Previewing ${selectedProvider.shortLabel} · no key is transmitted`
-                : `${selectedProvider.shortLabel} · Enter to send`}
+                : !providerReady
+                  ? 'Enter an API key and model ID to continue'
+                  : `${selectedProvider.shortLabel} · Enter to send`}
             </span>
-            <button type="button" disabled={loading || !question.trim()} onClick={() => void submit()} aria-label="Send question">
+            <button type="button" disabled={loading || !question.trim() || !canSend} onClick={() => void submit()} aria-label="Send question">
               <SendIcon size={17} />
             </button>
           </div>

@@ -1,18 +1,19 @@
-export type BasemapId = 'dark' | 'tdot' | 'naip';
+import type { AiProviderId } from '../shared/contracts';
 
-export type AiProviderId = 'hazardweave' | 'openai' | 'anthropic' | 'google';
+export type BasemapId = 'dark' | 'tdot' | 'naip';
 
 export interface AiProviderConfig {
   provider: AiProviderId;
   modelId: string;
   /**
-   * Browser-memory-only in the frontend preview. Do not persist this value to
-   * localStorage, source control, analytics, or logs.
+   * Held in React memory only. Do not persist this value to localStorage,
+   * source control, analytics, or logs.
    */
   apiKey: string;
 }
 
 export type {
+  AiProviderId,
   AssistantResponse,
   ChatMessage,
   ChatRequest,
@@ -24,6 +25,7 @@ export type {
   LayerState,
   MapAction,
   ProviderDescriptor,
+  RemoteMapLayerId,
   ResultRow,
   SourceReference,
 } from '../shared/contracts';

@@ -36,6 +36,10 @@ interface MapPanelProps {
   fitBounds?: [number, number, number, number];
   basemap: BasemapId;
   basemapOpacity: number;
+  onViewportChange?: (
+    bounds: [number, number, number, number],
+    zoom: number,
+  ) => void;
 }
 
 interface RemoteDataState {
@@ -311,9 +315,11 @@ export function MapPanel({
   fitBounds,
   basemap,
   basemapOpacity,
+  onViewportChange,
 }: MapPanelProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
+  const viewportChangeRef = useRef(onViewportChange);
   const loadedRemote = useRef(new Set<string>());
   const [remoteData, setRemoteData] = useState<RemoteDataState>(EMPTY_REMOTE_DATA);
   const [communityData, setCommunityData] = useState<RemoteCommunityDataState>(EMPTY_COMMUNITY_DATA);
@@ -321,6 +327,10 @@ export function MapPanel({
   const [sourceMessage, setSourceMessage] = useState('Official feeds ready');
   const [communityMessage, setCommunityMessage] = useState('Public community data ready');
   const [mapZoom, setMapZoom] = useState(10.2);
+
+  useEffect(() => {
+    viewportChangeRef.current = onViewportChange;
+  }, [onViewportChange]);
 
   const sviEnabled = Boolean(getCommunityLayer(communityLayers, 'cdc_svi')?.enabled);
   const acsEnabled = Boolean(getCommunityLayer(communityLayers, 'acs_socioeconomic')?.enabled);
@@ -361,13 +371,16 @@ export function MapPanel({
       window.clearTimeout(moveTimer);
       moveTimer = window.setTimeout(() => {
         const bounds = map.getBounds();
-        setMapBounds([
+        const nextBounds: [number, number, number, number] = [
           bounds.getWest(),
           bounds.getSouth(),
           bounds.getEast(),
           bounds.getNorth(),
-        ]);
-        setMapZoom(map.getZoom());
+        ];
+        const nextZoom = map.getZoom();
+        setMapBounds(nextBounds);
+        setMapZoom(nextZoom);
+        viewportChangeRef.current?.(nextBounds, nextZoom);
       }, 280);
     };
 

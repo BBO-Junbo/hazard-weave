@@ -43,7 +43,14 @@ const mockAssistantResponse: AssistantResponse = {
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, init);
   if (!response.ok) {
-    throw new Error(`${url} returned status ${response.status}.`);
+    let detail = '';
+    try {
+      const payload = (await response.json()) as { error?: string };
+      detail = payload.error?.trim() ?? '';
+    } catch {
+      // Ignore non-JSON error bodies.
+    }
+    throw new Error(detail || `${url} returned status ${response.status}.`);
   }
   return (await response.json()) as T;
 }
@@ -62,6 +69,7 @@ interface AiRequestOptions {
   previewMode: boolean;
   provider: AiProviderId;
   modelId: string;
+  apiKey: string;
 }
 
 function previewAssistantResponse(
@@ -104,16 +112,17 @@ export async function askHazardQuestion(
     return previewAssistantResponse(question, options);
   }
 
-  try {
-    return await fetchJson<AssistantResponse>('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question, context } satisfies ChatRequest),
-    });
-  } catch (error) {
-    if (!allowMockFallback) throw error;
-    console.warn('Chat API unavailable; using browser mock fallback.', error);
-    await new Promise((resolve) => window.setTimeout(resolve, 400));
-    return previewAssistantResponse(question, options);
-  }
+  return fetchJson<AssistantResponse>('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      question,
+      context,
+      ai: {
+        provider: options.provider,
+        modelId: options.modelId,
+        apiKey: options.provider === 'hazardweave' ? undefined : options.apiKey,
+      },
+    } satisfies ChatRequest),
+  });
 }

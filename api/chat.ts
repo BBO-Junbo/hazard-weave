@@ -1,7 +1,16 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { AssistantResponse, ChatRequest, LayerId } from '../shared/contracts';
-import { getDataProvider } from '../server/data';
-import { allowMethods, errorResponse } from '../server/http';
+import { generateText, stepCountIs } from 'ai';
+import type {
+  AssistantResponse,
+  ChatRequest,
+  MapAction,
+  RemoteMapLayerId,
+  SourceReference,
+} from '../shared/contracts';
+import { buildSystemPrompt } from '../server/ai/prompt';
+import { resolveModel } from '../server/ai/provider';
+import { createHazardWeaveTools } from '../server/ai/tools';
+import { allowMethods } from '../server/http';
 
 function parseBody(body: unknown): ChatRequest {
   const value = typeof body === 'string' ? JSON.parse(body) : body;
@@ -10,19 +19,33 @@ function parseBody(body: unknown): ChatRequest {
   }
 
   const request = value as ChatRequest;
-  if (!request.question?.trim()) {
-    throw new Error('A non-empty question is required.');
-  }
+  if (!request.question?.trim()) throw new Error('A non-empty question is required.');
+  if (request.question.length > 4000) throw new Error('The question is too long.');
   return request;
 }
 
-function chooseLayers(question: string): LayerId[] {
-  const lower = question.toLowerCase();
-  const layers = new Set<LayerId>(['flood']);
-  if (/vulnerab|community|population|priority/.test(lower)) layers.add('vulnerability');
-  if (/facilit|hospital|shelter|care|nursing/.test(lower)) layers.add('facilities');
-  if (/road|incident|report|debris|access/.test(lower)) layers.add('incidents');
-  return [...layers];
+function dedupeSources(sources: SourceReference[]): SourceReference[] {
+  const seen = new Set<string>();
+  return sources.filter((source) => {
+    const key = `${source.name}|${source.validTime}|${source.modelVersion ?? ''}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function safeMessage(error: unknown): string {
+  const raw = error instanceof Error ? error.message : 'Unknown AI request error.';
+  return raw
+    .replace(/sk-[A-Za-z0-9_-]+/g, '[redacted]')
+    .replace(/AIza[A-Za-z0-9_-]+/g, '[redacted]')
+    .slice(0, 800);
+}
+
+function looksDataDependent(question: string): boolean {
+  return /current|now|here|this area|flood|water|gauge|vulnerab|socio|poverty|income|claim|assistance|resource|need|community|risk|expos/i.test(
+    question,
+  );
 }
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
@@ -30,30 +53,66 @@ export default async function handler(request: VercelRequest, response: VercelRe
 
   try {
     const body = parseBody(request.body);
-    const provider = await getDataProvider();
-    const payload = await provider.read();
-    const topRows = [...payload.rows]
-      .sort((a, b) => b.exposedPopulation - a.exposedPopulation)
-      .slice(0, 3);
-    const visibleLayers = chooseLayers(body.question);
-    const leading = topRows[0];
+    const resolved = resolveModel(body.ai);
+    const runtime = createHazardWeaveTools(body.context);
 
-    const result: AssistantResponse = {
-      answer: leading
-        ? `${leading.name} is the first area to review in the current dataset. Its primary concern is ${leading.primaryReason.toLowerCase()}. The result is generated from the active ${provider.descriptor.label.toLowerCase()} provider and should be verified before operational use.`
-        : 'The active data provider returned no ranked communities.',
-      confidence: 'Moderate',
-      mapActions: [
-        ...visibleLayers.map((layerId) => ({ type: 'show_layer' as const, layerId })),
-        { type: 'fit_bounds', bounds: [-84.08, 35.88, -83.77, 36.09] },
-      ],
-      rows: topRows,
-      sources: payload.sources,
-      provider: provider.descriptor,
+    const result = await generateText({
+      model: resolved.model,
+      system: buildSystemPrompt(body.context),
+      prompt: body.question.trim(),
+      tools: runtime.tools,
+      stopWhen: stepCountIs(5),
+      maxOutputTokens: 900,
+    });
+
+    const evidence = runtime.evidence;
+    const grounded = evidence.length > 0;
+    const sources = dedupeSources(evidence.flatMap((item) => item.sources));
+    const mapLayerIds = [...new Set(evidence.flatMap((item) => item.mapLayers))] as RemoteMapLayerId[];
+    const mapActions: MapAction[] = mapLayerIds.map((layerId) => ({
+      type: 'show_layer',
+      layerId,
+    }));
+
+    if (body.context?.mapBounds && mapLayerIds.length > 0) {
+      mapActions.push({ type: 'fit_bounds', bounds: body.context.mapBounds });
+    }
+
+    let answer = result.text.trim();
+    if (looksDataDependent(body.question) && !grounded) {
+      answer =
+        'I could not ground this request in a HazardWeave data tool, so I will not infer an operational answer. Try asking about current flood conditions, community vulnerability, or FEMA/NFIP assistance in the current map view.';
+    } else if (!answer && evidence.length > 0) {
+      answer = evidence.map((item) => item.summary).join(' ');
+    } else if (!answer) {
+      answer = 'The selected model returned no answer.';
+    }
+
+    const warnings = evidence.flatMap((item) => item.warnings ?? []);
+    const confidence: AssistantResponse['confidence'] = grounded
+      ? warnings.length > 0
+        ? 'Moderate'
+        : 'High'
+      : 'Low';
+
+    const payload: AssistantResponse = {
+      answer,
+      confidence,
+      mapActions,
+      rows: [],
+      sources,
+      model: {
+        provider: resolved.provider,
+        modelId: resolved.modelId,
+        label: resolved.label,
+      },
     };
 
-    response.status(200).json(result);
+    response.setHeader('Cache-Control', 'no-store');
+    response.status(200).json(payload);
   } catch (error) {
-    errorResponse(response, error, error instanceof SyntaxError ? 400 : 500);
+    const message = safeMessage(error);
+    const isInputError = /required|question|model id|api key|map extent|unsupported ai provider/i.test(message);
+    response.status(isInputError ? 400 : 502).json({ error: message });
   }
 }

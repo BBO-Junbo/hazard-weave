@@ -1,6 +1,21 @@
 export type LayerId = 'flood' | 'vulnerability' | 'facilities' | 'incidents';
 export type DataProviderName = 'mock' | 'blob' | 'external' | 'postgres';
 
+export type AiProviderId = 'hazardweave' | 'openai' | 'anthropic' | 'google';
+
+export type RemoteMapLayerId =
+  | 'fema_floodplain'
+  | 'fema_floodway'
+  | 'usgs_gauges'
+  | 'noaa_observed'
+  | 'noaa_forecast'
+  | 'nwm_high_water'
+  | 'cdc_svi'
+  | 'acs_socioeconomic'
+  | 'nfip_claims'
+  | 'fema_ihp'
+  | 'osm_resources';
+
 export type Position = [number, number] | [number, number, number];
 
 export interface PointGeometry {
@@ -56,7 +71,7 @@ export interface ResultRow {
 export interface MapAction {
   type: 'fit_bounds' | 'show_layer';
   bounds?: [number, number, number, number];
-  layerId?: LayerId;
+  layerId?: LayerId | RemoteMapLayerId;
 }
 
 export interface AssistantResponse {
@@ -66,6 +81,11 @@ export interface AssistantResponse {
   sources: SourceReference[];
   confidence: 'High' | 'Moderate' | 'Low';
   provider?: ProviderDescriptor;
+  model?: {
+    provider: AiProviderId;
+    modelId: string;
+    label: string;
+  };
 }
 
 export interface DashboardMapData {
@@ -104,13 +124,24 @@ export interface DashboardResponse extends DashboardPayload {
   generatedAt: string;
 }
 
+export interface ChatModelSelection {
+  provider: AiProviderId;
+  modelId?: string;
+  /**
+   * BYOK secret. Server-side use only. Never log or persist this value.
+   */
+  apiKey?: string;
+}
+
 export interface ChatRequest {
   question: string;
+  ai?: ChatModelSelection;
   context?: {
     incidentId?: string;
     selectedTime?: string;
     selectedCounty?: string;
-    visibleLayers?: LayerId[];
+    visibleLayers?: string[];
     mapBounds?: [number, number, number, number];
+    mapZoom?: number;
   };
 }

@@ -43,13 +43,17 @@ export default function App() {
   const [provider, setProvider] = useState<ProviderDescriptor>(initialProvider);
   const [rows, setRows] = useState<ResultRow[]>(initialResultRows);
   const [sources, setSources] = useState<SourceReference[]>(initialSources);
-  const [confidence, setConfidence] = useState('Frontend preview');
   const [aiConfig, setAiConfig] = useState<AiProviderConfig>(initialAiProviderConfig);
-  const aiPreviewMode = import.meta.env.VITE_AI_FRONTEND_PREVIEW !== 'false';
+  const aiPreviewMode = import.meta.env.VITE_AI_FRONTEND_PREVIEW === 'true';
+  const [confidence, setConfidence] = useState(
+    aiPreviewMode ? 'Frontend preview' : 'Awaiting grounded query',
+  );
   const [selectedTime, setSelectedTime] = useState('now');
   const [selectedCounty, setSelectedCounty] = useState('all');
   const [basemap, setBasemap] = useState<BasemapId>('tdot');
   const [basemapOpacity, setBasemapOpacity] = useState(0.96);
+  const [mapBounds, setMapBounds] = useState<[number, number, number, number]>();
+  const [mapZoom, setMapZoom] = useState(10.2);
   const [floodLayers, setFloodLayers] = useState(initialFloodLayers);
   const [communityLayers, setCommunityLayers] = useState(initialCommunityLayers);
   const [fitBounds, setFitBounds] = useState<[
@@ -66,8 +70,9 @@ export default function App() {
     {
       id: crypto.randomUUID(),
       role: 'assistant',
-      content:
-        'Frontend preview ready. Choose an AI provider above, then test the HazardWeave question-answering experience. Live model routing will be connected after the interface is approved.',
+      content: aiPreviewMode
+        ? 'Frontend preview ready. Choose an AI provider above, then test the HazardWeave question-answering experience. No live model request will be made in preview mode.'
+        : 'HazardWeave Copilot is live. Choose HazardWeave Lite or bring your own model API key, then ask about current flood conditions, community vulnerability, or FEMA/NFIP assistance in the current map view.',
       timestamp: nowLabel(),
     },
   ]);
@@ -124,6 +129,27 @@ export default function App() {
     );
   };
 
+  const handleViewportChange = useCallback(
+    (bounds: [number, number, number, number], zoom: number) => {
+      setMapBounds(bounds);
+      setMapZoom(zoom);
+    },
+    [],
+  );
+
+  const showRemoteLayer = useCallback((layerId: string) => {
+    setFloodLayers((current) =>
+      current.map((layer) =>
+        layer.id === layerId ? { ...layer, enabled: true } : layer,
+      ),
+    );
+    setCommunityLayers((current) =>
+      current.map((layer) =>
+        layer.id === layerId ? { ...layer, enabled: true } : layer,
+      ),
+    );
+  }, []);
+
   const askQuestion = async (question: string) => {
     setError(null);
     setLoading(true);
@@ -144,25 +170,35 @@ export default function App() {
           incidentId: incident.id,
           selectedTime,
           selectedCounty,
+          mapBounds,
+          mapZoom,
+          visibleLayers: [
+            ...floodLayers.filter((layer) => layer.enabled).map((layer) => layer.id),
+            ...communityLayers.filter((layer) => layer.enabled).map((layer) => layer.id),
+          ],
         },
         {
           previewMode: aiPreviewMode,
           provider: aiConfig.provider,
           modelId: aiConfig.modelId,
+          apiKey: aiConfig.apiKey,
         },
       );
 
       if (aiPreviewMode) {
         setConfidence('Frontend preview');
       } else {
-        setRows(response.rows);
-        setSources(response.sources);
+        if (response.rows.length > 0) setRows(response.rows);
+        if (response.sources.length > 0) setSources(response.sources);
         setConfidence(`${response.confidence} confidence`);
         if (response.provider) setProvider(response.provider);
 
         response.mapActions.forEach((action) => {
           if (action.type === 'fit_bounds' && action.bounds) {
             setFitBounds(action.bounds);
+          }
+          if (action.type === 'show_layer' && action.layerId) {
+            showRemoteLayer(action.layerId);
           }
         });
       }
@@ -221,6 +257,7 @@ export default function App() {
           basemapOpacity={basemapOpacity}
           floodLayers={floodLayers}
           communityLayers={communityLayers}
+          onViewportChange={handleViewportChange}
         />
 
         <ChatPanel
