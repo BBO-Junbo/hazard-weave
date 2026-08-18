@@ -1,0 +1,30 @@
+{
+  "name": "hazardweave-dashboard",
+  "private": true,
+  "version": "0.4.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:full": "vercel dev",
+    "build": "tsc -b && vite build",
+    "typecheck:api": "tsc -p tsconfig.api.json",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vercel/blob": "^2.3.0",
+    "@vercel/node": "^5.5.0",
+    "maplibre-gl": "^6.0.0",
+    "postgres": "^3.4.7",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "latest",
+    "@vitejs/plugin-react": "latest",
+    "typescript": "latest",
+    "vercel": "latest",
+    "vite": "^8.1.5"
+  }
+}
