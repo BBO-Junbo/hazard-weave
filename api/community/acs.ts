@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { loadAcsSocioeconomicDirect } from '../../shared/publicData';
-import { cachePublic } from '../../server/flood';
-import { parseBboxQuery } from '../../server/community';
-import { allowMethods, errorResponse } from '../../server/http';
+import { loadAcsSocioeconomicDirect } from '../../shared/publicData.js';
+import { cachePublic } from '../../server/flood.js';
+import { parseBboxQuery } from '../../server/community.js';
+import { allowMethods, errorResponse } from '../../server/http.js';
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (!allowMethods(request, response, ['GET'])) return;

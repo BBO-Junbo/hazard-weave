@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { UsgsInstantaneousPayload } from '../../shared/liveFlood';
-import { parseUsgsInstantaneous } from '../../shared/liveFlood';
-import { fetchOfficialJson, cachePublic } from '../../server/flood';
-import { allowMethods, errorResponse } from '../../server/http';
+import type { UsgsInstantaneousPayload } from '../../shared/liveFlood.js';
+import { parseUsgsInstantaneous } from '../../shared/liveFlood.js';
+import { fetchOfficialJson, cachePublic } from '../../server/flood.js';
+import { allowMethods, errorResponse } from '../../server/http.js';
 
 const SERVICE =
   'https://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=tn&parameterCd=00060,00065&siteStatus=active';

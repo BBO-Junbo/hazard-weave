@@ -4,10 +4,10 @@ import {
   normalizeFeatureCollection,
   parseUsgsInstantaneous,
   type UsgsInstantaneousPayload,
-} from '../../../shared/liveFlood';
-import { fetchOfficialJson } from '../../flood';
-import type { EvidenceCollector, ToolRuntimeContext } from './types';
-import { pointInBounds, requireBounds, text, toNumber } from './utils';
+} from '../../../shared/liveFlood.js';
+import { fetchOfficialJson } from '../../flood.js';
+import type { EvidenceCollector, ToolRuntimeContext } from './types.js';
+import { pointInBounds, requireBounds, text, toNumber } from './utils.js';
 
 const USGS_SERVICE =
   'https://waterservices.usgs.gov/nwis/iv/?format=json&stateCd=tn&parameterCd=00060,00065&siteStatus=active';

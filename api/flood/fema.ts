@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { fetchOfficialJson, cachePublic } from '../../server/flood';
-import { allowMethods, errorResponse } from '../../server/http';
-import { normalizeFeatureCollection } from '../../shared/liveFlood';
+import { fetchOfficialJson, cachePublic } from '../../server/flood.js';
+import { allowMethods, errorResponse } from '../../server/http.js';
+import { normalizeFeatureCollection } from '../../shared/liveFlood.js';
 
 const SERVICE =
   'https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query';

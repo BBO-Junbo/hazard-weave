@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getDataProvider } from '../server/data';
-import { allowMethods, errorResponse } from '../server/http';
+import { getDataProvider } from '../server/data/index.js';
+import { allowMethods, errorResponse } from '../server/http.js';
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (!allowMethods(request, response, ['GET'])) return;

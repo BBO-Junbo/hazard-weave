@@ -1,4 +1,4 @@
-import type { RemoteMapLayerId, SourceReference } from '../../../shared/contracts';
+import type { RemoteMapLayerId, SourceReference } from '../../../shared/contracts.js';
 
 export interface ToolEvidence {
   tool: 'getFloodStatus' | 'getCommunityVulnerability' | 'getAssistanceSummary';

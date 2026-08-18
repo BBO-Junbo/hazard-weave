@@ -2,7 +2,7 @@ import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
-import type { ChatModelSelection } from '../../shared/contracts';
+import type { ChatModelSelection } from '../../shared/contracts.js';
 
 function required(value: string | undefined, message: string): string {
   const clean = value?.trim();

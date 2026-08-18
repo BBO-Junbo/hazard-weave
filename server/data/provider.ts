@@ -2,7 +2,7 @@ import type {
   DashboardPayload,
   DataProviderName,
   ProviderDescriptor,
-} from '../../shared/contracts';
+} from '../../shared/contracts.js';
 
 export interface DashboardDataProvider {
   descriptor: ProviderDescriptor;

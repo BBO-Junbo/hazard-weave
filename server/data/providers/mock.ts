@@ -1,6 +1,6 @@
-import { mockDashboardPayload } from '../../../shared/mockDataset';
-import type { DashboardPayload } from '../../../shared/contracts';
-import type { DashboardDataProvider } from '../provider';
+import { mockDashboardPayload } from '../../../shared/mockDataset.js';
+import type { DashboardPayload } from '../../../shared/contracts.js';
+import type { DashboardDataProvider } from '../provider.js';
 
 function clonePayload(): DashboardPayload {
   return JSON.parse(JSON.stringify(mockDashboardPayload)) as DashboardPayload;

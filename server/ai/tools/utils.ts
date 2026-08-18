@@ -1,4 +1,4 @@
-import type { LooseFeature, LooseFeatureCollection } from '../../../shared/liveFlood';
+import type { LooseFeature, LooseFeatureCollection } from '../../../shared/liveFlood.js';
 
 export function requireBounds(
   bounds: [number, number, number, number] | undefined,

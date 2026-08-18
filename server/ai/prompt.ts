@@ -1,4 +1,4 @@
-import type { ChatRequest } from '../../shared/contracts';
+import type { ChatRequest } from '../../shared/contracts.js';
 
 export function buildSystemPrompt(context: ChatRequest['context']): string {
   return `You are HazardWeave Copilot, a Tennessee flood and disaster decision-support assistant.

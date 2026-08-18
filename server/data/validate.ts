@@ -1,4 +1,4 @@
-import type { DashboardPayload } from '../../shared/contracts';
+import type { DashboardPayload } from '../../shared/contracts.js';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);

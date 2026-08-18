@@ -1,5 +1,5 @@
-import type { DataProviderName } from '../../shared/contracts';
-import type { DashboardDataProvider } from './provider';
+import type { DataProviderName } from '../../shared/contracts.js';
+import type { DashboardDataProvider } from './provider.js';
 
 function selectedProvider(): DataProviderName {
   const configured = process.env.DATA_PROVIDER?.toLowerCase();
@@ -20,20 +20,20 @@ function selectedProvider(): DataProviderName {
 export async function getDataProvider(): Promise<DashboardDataProvider> {
   switch (selectedProvider()) {
     case 'blob': {
-      const { createBlobProvider } = await import('./providers/blob');
+      const { createBlobProvider } = await import('./providers/blob.js');
       return createBlobProvider();
     }
     case 'external': {
-      const { createExternalProvider } = await import('./providers/external');
+      const { createExternalProvider } = await import('./providers/external.js');
       return createExternalProvider();
     }
     case 'postgres': {
-      const { createPostgresProvider } = await import('./providers/postgres');
+      const { createPostgresProvider } = await import('./providers/postgres.js');
       return createPostgresProvider();
     }
     case 'mock':
     default: {
-      const { createMockProvider } = await import('./providers/mock');
+      const { createMockProvider } = await import('./providers/mock.js');
       return createMockProvider();
     }
   }

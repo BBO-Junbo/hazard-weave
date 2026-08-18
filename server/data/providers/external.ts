@@ -1,6 +1,6 @@
-import type { DashboardPayload } from '../../../shared/contracts';
-import type { DashboardDataProvider } from '../provider';
-import { parseDashboardPayload } from '../validate';
+import type { DashboardPayload } from '../../../shared/contracts.js';
+import type { DashboardDataProvider } from '../provider.js';
+import { parseDashboardPayload } from '../validate.js';
 
 function dashboardUrl(): URL {
   const baseUrl = process.env.EXTERNAL_DATA_API_URL;

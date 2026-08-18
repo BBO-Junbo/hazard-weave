@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { mockDashboardPayload } from '../../shared/mockDataset';
-import { getDataProvider } from '../../server/data';
-import { allowMethods, errorResponse, requireAdmin } from '../../server/http';
+import { mockDashboardPayload } from '../../shared/mockDataset.js';
+import { getDataProvider } from '../../server/data/index.js';
+import { allowMethods, errorResponse, requireAdmin } from '../../server/http.js';
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (!allowMethods(request, response, ['POST'])) return;

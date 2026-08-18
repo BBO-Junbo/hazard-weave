@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { normalizeFeatureCollection } from '../../shared/liveFlood';
-import { fetchOfficialJson, cachePublic } from '../../server/flood';
-import { allowMethods, errorResponse } from '../../server/http';
+import { normalizeFeatureCollection } from '../../shared/liveFlood.js';
+import { fetchOfficialJson, cachePublic } from '../../server/flood.js';
+import { allowMethods, errorResponse } from '../../server/http.js';
 
 function getKind(value: unknown): 'observed' | 'forecast' {
   const raw = Array.isArray(value) ? value[0] : value;

@@ -6,11 +6,11 @@ import type {
   MapAction,
   RemoteMapLayerId,
   SourceReference,
-} from '../shared/contracts';
-import { buildSystemPrompt } from '../server/ai/prompt';
-import { resolveModel } from '../server/ai/provider';
-import { createHazardWeaveTools } from '../server/ai/tools';
-import { allowMethods } from '../server/http';
+} from '../shared/contracts.js';
+import { buildSystemPrompt } from '../server/ai/prompt.js';
+import { resolveModel } from '../server/ai/provider.js';
+import { createHazardWeaveTools } from '../server/ai/tools/index.js';
+import { allowMethods } from '../server/http.js';
 
 function parseBody(body: unknown): ChatRequest {
   const value = typeof body === 'string' ? JSON.parse(body) : body;

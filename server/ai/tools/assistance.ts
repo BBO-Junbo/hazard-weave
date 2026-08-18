@@ -1,8 +1,8 @@
 import { tool } from 'ai';
 import { z } from 'zod';
-import { loadFemaIhpDirect, loadNfipDirect } from '../../../shared/publicData';
-import type { EvidenceCollector, ToolRuntimeContext } from './types';
-import { requireBounds, sumProperties } from './utils';
+import { loadFemaIhpDirect, loadNfipDirect } from '../../../shared/publicData.js';
+import type { EvidenceCollector, ToolRuntimeContext } from './types.js';
+import { requireBounds, sumProperties } from './utils.js';
 
 function currentIso() {
   return new Date().toISOString();

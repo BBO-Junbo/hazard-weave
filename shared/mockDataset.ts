@@ -1,4 +1,4 @@
-import type { DashboardPayload } from './contracts';
+import type { DashboardPayload } from './contracts.js';
 
 export const mockDashboardPayload: DashboardPayload = {
   layers: [

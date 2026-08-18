@@ -3,7 +3,7 @@ import {
   normalizeFeatureCollection,
   type LooseFeature,
   type LooseFeatureCollection,
-} from './liveFlood';
+} from './liveFlood.js';
 
 export type Bounds = [number, number, number, number];
 

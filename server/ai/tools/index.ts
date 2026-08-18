@@ -1,8 +1,8 @@
-import type { ChatRequest } from '../../../shared/contracts';
-import { createAssistanceSummaryTool } from './assistance';
-import { createFloodStatusTool } from './flood';
-import type { ToolEvidence } from './types';
-import { createCommunityVulnerabilityTool } from './vulnerability';
+import type { ChatRequest } from '../../../shared/contracts.js';
+import { createAssistanceSummaryTool } from './assistance.js';
+import { createFloodStatusTool } from './flood.js';
+import type { ToolEvidence } from './types.js';
+import { createCommunityVulnerabilityTool } from './vulnerability.js';
 
 export function createHazardWeaveTools(context: ChatRequest['context']) {
   const evidence: ToolEvidence[] = [];
