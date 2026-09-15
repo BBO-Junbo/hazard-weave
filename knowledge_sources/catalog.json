@@ -1,0 +1,139 @@
+﻿[
+  {
+    "id": "fema_nfhl_guidance_2022",
+    "file": "01_FEMA/FEMA_NFHL_Guidance_2022.pdf",
+    "title": "National Flood Hazard Layer Guidance",
+    "agency": "FEMA",
+    "year": 2022,
+    "sourceType": "official_guidance",
+    "topics": [
+      "flood",
+      "floodplain",
+      "NFHL",
+      "SFHA",
+      "flood zone",
+      "FEMA"
+    ],
+    "url": "https://www.fema.gov/sites/default/files/documents/fema_national-flood-hazard-layer_112022.pdf"
+  },
+  {
+    "id": "nws_flood_safety",
+    "file": "02_NOAA_NWS/NWS_Flood_Safety.pdf",
+    "title": "Flood Safety",
+    "agency": "NOAA / National Weather Service",
+    "year": 2018,
+    "sourceType": "official_guidance",
+    "topics": [
+      "flood",
+      "flood safety",
+      "warning",
+      "preparedness",
+      "NWS",
+      "NOAA"
+    ],
+    "url": "https://www.weather.gov/media/twc/FloodSafety-OnePager-11-29-2018.pdf"
+  },
+  {
+    "id": "noaa_national_water_model",
+    "file": "02_NOAA_NWS/NOAA_National_Water_Model.pdf",
+    "title": "National Water Model",
+    "agency": "NOAA",
+    "year": 2024,
+    "sourceType": "official_documentation",
+    "topics": [
+      "National Water Model",
+      "NWM",
+      "streamflow",
+      "hydrology",
+      "forecast",
+      "river",
+      "NOAA"
+    ],
+    "url": "https://water.noaa.gov/about/nwm"
+  },
+  {
+    "id": "cdc_svi_2022",
+    "file": "04_CDC_SVI/CDC_ATSDR_SVI_2022_Documentation.pdf",
+    "title": "CDC/ATSDR Social Vulnerability Index 2022 Documentation",
+    "agency": "CDC / ATSDR",
+    "year": 2022,
+    "sourceType": "official_documentation",
+    "topics": [
+      "SVI",
+      "social vulnerability",
+      "vulnerability",
+      "census tract",
+      "percentile",
+      "demographics",
+      "CDC"
+    ],
+    "url": "https://stacks.cdc.gov/view/cdc/157287"
+  },
+  {
+    "id": "tennessee_hazard_mitigation_plan_2023",
+    "file": "06_Tennessee/Tennessee_State_Hazard_Mitigation_Plan_2023.pdf",
+    "title": "Tennessee State Hazard Mitigation Plan",
+    "agency": "Tennessee Emergency Management Agency",
+    "year": 2023,
+    "sourceType": "state_plan",
+    "topics": [
+      "Tennessee",
+      "hazard mitigation",
+      "flood",
+      "risk",
+      "vulnerability",
+      "emergency management",
+      "mitigation"
+    ],
+    "url": "https://www.tn.gov/tema/ready-communities/planning-and-risks/hazard-mitigation/hazard-mitigation-planning/state-hazard-mitigation-planning.html"
+  },
+  {
+    "id": "hazardweave_readme",
+    "file": "07_HazardWeave/README.md",
+    "title": "HazardWeave Project Documentation",
+    "agency": "HazardWeave",
+    "year": 2026,
+    "sourceType": "project_documentation",
+    "topics": [
+      "HazardWeave",
+      "dashboard",
+      "architecture",
+      "features"
+    ],
+    "url": "https://github.com/BBO-Junbo/hazard-weave"
+  },
+  {
+    "id": "hazardweave_public_data_sources",
+    "file": "07_HazardWeave/PUBLIC_DATA_SOURCES.md",
+    "title": "HazardWeave Public Data Sources",
+    "agency": "HazardWeave",
+    "year": 2026,
+    "sourceType": "project_documentation",
+    "topics": [
+      "HazardWeave",
+      "data sources",
+      "FEMA",
+      "NOAA",
+      "USGS",
+      "SVI",
+      "OpenFEMA"
+    ],
+    "url": "https://github.com/BBO-Junbo/hazard-weave"
+  },
+  {
+    "id": "hazardweave_ai_live_setup",
+    "file": "07_HazardWeave/AI_LIVE_SETUP.md",
+    "title": "HazardWeave AI and Live Data Setup",
+    "agency": "HazardWeave",
+    "year": 2026,
+    "sourceType": "project_documentation",
+    "topics": [
+      "HazardWeave",
+      "AI",
+      "live data",
+      "tools",
+      "API"
+    ],
+    "url": "https://github.com/BBO-Junbo/hazard-weave"
+  }
+]
