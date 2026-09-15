@@ -1,5 +1,6 @@
 import { mockDashboardPayload } from '../../shared/mockDataset';
 import { getAiProviderOption } from '../ai/catalog';
+import { retrieveKnowledge } from '../rag/retriever';
 import type {
   AiProviderId,
   AssistantResponse,
@@ -111,13 +112,45 @@ export async function askHazardQuestion(
     await new Promise((resolve) => window.setTimeout(resolve, 520));
     return previewAssistantResponse(question, options);
   }
+  let rag: ChatRequest['rag'] = [];
 
+  try {
+
+    rag = await retrieveKnowledge(
+      question,
+      5,
+    );
+
+    console.debug(
+      '[HazardWeave RAG]',
+      rag.map((item) => ({
+        title: item.title,
+        page: item.page,
+        score: item.score,
+      })),
+    );
+
+  } catch (error) {
+
+    /*
+    * RAG failure must not break the existing
+    * HazardWeave live-data workflow.
+    */
+    console.warn(
+      'Knowledge retrieval unavailable.',
+      error,
+    );
+  }
   return fetchJson<AssistantResponse>('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       question,
+
       context,
+
+      rag,
+
       ai: {
         provider: options.provider,
         modelId: options.modelId,

@@ -5,23 +5,24 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:full": "vercel dev",
+    "dev:full": "vercel dev --local-config vercel.dev.json",
     "build": "tsc -b && vite build",
     "typecheck:api": "tsc -p tsconfig.api.json",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.0",
+    "@ai-sdk/google": "^4.0.0",
+    "@ai-sdk/openai": "^4.0.0",
+    "@ai-sdk/openai-compatible": "^3.0.0",
     "@vercel/blob": "^2.3.0",
     "@vercel/node": "^5.5.0",
+    "ai": "^7.0.0",
     "maplibre-gl": "^6.0.0",
+    "minisearch": "^7.2.0",
     "postgres": "^3.4.7",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "ai": "^7.0.0",
-    "@ai-sdk/openai": "^4.0.0",
-    "@ai-sdk/anthropic": "^4.0.0",
-    "@ai-sdk/google": "^4.0.0",
-    "@ai-sdk/openai-compatible": "^3.0.0",
     "zod": "^4.0.0"
   },
   "devDependencies": {

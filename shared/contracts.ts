@@ -18,6 +18,18 @@ export type RemoteMapLayerId =
 
 export type Position = [number, number] | [number, number, number];
 
+export interface RetrievedKnowledgeChunk {
+  id: string;
+  docId: string;
+  title: string;
+  agency: string;
+  year?: number;
+  page?: number | null;
+  url?: string;
+  text: string;
+  score: number;
+}
+
 export interface PointGeometry {
   type: 'Point';
   coordinates: Position;
@@ -135,7 +147,11 @@ export interface ChatModelSelection {
 
 export interface ChatRequest {
   question: string;
+
   ai?: ChatModelSelection;
+
+  rag?: RetrievedKnowledgeChunk[];
+
   context?: {
     incidentId?: string;
     selectedTime?: string;
