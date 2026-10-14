@@ -143,6 +143,11 @@ export interface ChatModelSelection {
    * BYOK secret. Server-side use only. Never log or persist this value.
    */
   apiKey?: string;
+  /**
+   * Optional BYOK endpoint override (e.g. a proxy or OpenAI-compatible service).
+   * Empty means the provider's official endpoint.
+   */
+  baseUrl?: string;
 }
 
 export interface ChatRequest {

@@ -71,6 +71,7 @@ interface AiRequestOptions {
   provider: AiProviderId;
   modelId: string;
   apiKey: string;
+  baseUrl: string;
 }
 
 function previewAssistantResponse(
@@ -155,6 +156,8 @@ export async function askHazardQuestion(
         provider: options.provider,
         modelId: options.modelId,
         apiKey: options.provider === 'hazardweave' ? undefined : options.apiKey,
+        baseUrl:
+          options.provider === 'hazardweave' ? undefined : options.baseUrl.trim() || undefined,
       },
     } satisfies ChatRequest),
   });

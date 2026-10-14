@@ -64,6 +64,7 @@ export function ChatPanel({
       provider: providerId,
       modelId: option.defaultModel,
       apiKey: '',
+      baseUrl: '',
     });
   };
 
@@ -165,6 +166,19 @@ export function ChatPanel({
                         onAiConfigChange({ ...aiConfig, modelId: event.target.value })
                       }
                       placeholder={selectedProvider.modelPlaceholder}
+                    />
+                  </label>
+                  <label>
+                    <span>Base URL (optional)</span>
+                    <input
+                      type="url"
+                      autoComplete="off"
+                      spellCheck={false}
+                      value={aiConfig.baseUrl}
+                      onChange={(event) =>
+                        onAiConfigChange({ ...aiConfig, baseUrl: event.target.value })
+                      }
+                      placeholder={selectedProvider.defaultBaseUrl ?? 'https://…'}
                     />
                   </label>
                   <div className="provider-privacy-note">

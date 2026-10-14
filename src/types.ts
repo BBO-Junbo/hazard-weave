@@ -10,6 +10,8 @@ export interface AiProviderConfig {
    * source control, analytics, or logs.
    */
   apiKey: string;
+  /** Optional BYOK endpoint override. Empty uses the provider's official URL. */
+  baseUrl: string;
 }
 
 export type {

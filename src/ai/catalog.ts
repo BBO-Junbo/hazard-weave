@@ -9,6 +9,7 @@ export interface AiProviderOption {
   badge: string;
   defaultModel: string;
   modelPlaceholder: string;
+  defaultBaseUrl?: string;
 }
 
 export const aiProviderOptions: AiProviderOption[] = [
@@ -31,6 +32,7 @@ export const aiProviderOptions: AiProviderOption[] = [
     badge: 'BYOK',
     defaultModel: '',
     modelPlaceholder: 'Enter an OpenAI model ID',
+    defaultBaseUrl: 'https://api.openai.com/v1',
   },
   {
     id: 'anthropic',
@@ -41,6 +43,7 @@ export const aiProviderOptions: AiProviderOption[] = [
     badge: 'BYOK',
     defaultModel: '',
     modelPlaceholder: 'Enter a Claude model ID',
+    defaultBaseUrl: 'https://api.anthropic.com/v1',
   },
   {
     id: 'google',
@@ -51,6 +54,7 @@ export const aiProviderOptions: AiProviderOption[] = [
     badge: 'BYOK',
     defaultModel: '',
     modelPlaceholder: 'Enter a Gemini model ID',
+    defaultBaseUrl: 'https://generativelanguage.googleapis.com/v1beta',
   },
 ];
 
@@ -58,6 +62,7 @@ export const initialAiProviderConfig: AiProviderConfig = {
   provider: 'hazardweave',
   modelId: 'hazardweave-lite',
   apiKey: '',
+  baseUrl: '',
 };
 
 export function getAiProviderOption(id: AiProviderId) {

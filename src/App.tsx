@@ -182,6 +182,7 @@ export default function App() {
           provider: aiConfig.provider,
           modelId: aiConfig.modelId,
           apiKey: aiConfig.apiKey,
+          baseUrl: aiConfig.baseUrl,
         },
       );
 
