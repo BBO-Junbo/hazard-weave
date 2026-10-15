@@ -181,6 +181,14 @@ export function ChatPanel({
                       placeholder={selectedProvider.defaultBaseUrl ?? 'https://…'}
                     />
                   </label>
+                  {/^http:\/\//i.test(aiConfig.baseUrl.trim()) && (
+                    <div className="provider-privacy-note insecure">
+                      <span className="privacy-dot" />
+                      <p>
+                        This endpoint uses plain http. Your API key and conversation will be sent unencrypted between HazardWeave and the endpoint. Use https whenever possible.
+                      </p>
+                    </div>
+                  )}
                   <div className="provider-privacy-note">
                     <span className="privacy-dot" />
                     <p>

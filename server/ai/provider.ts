@@ -19,7 +19,8 @@ const PRIVATE_HOST =
 
 /**
  * Validates a user-supplied BYOK endpoint. The server fetches this URL, so only
- * public https hosts are allowed to avoid reaching internal services (SSRF).
+ * public hosts are allowed to avoid reaching internal services (SSRF). Plain http is
+ * accepted for proxies without TLS; the key then travels unencrypted, at the user's choice.
  */
 function userBaseUrl(value: string | undefined): string | undefined {
   const clean = value?.trim();
@@ -31,7 +32,9 @@ function userBaseUrl(value: string | undefined): string | undefined {
   } catch {
     throw new Error('Base URL is not a valid URL.');
   }
-  if (url.protocol !== 'https:') throw new Error('Base URL must use https.');
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') {
+    throw new Error('Base URL must use http or https.');
+  }
   if (url.username || url.password) throw new Error('Base URL must not contain credentials.');
   if (PRIVATE_HOST.test(url.hostname)) throw new Error('Base URL must be a public host.');
 

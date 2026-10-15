@@ -1238,6 +1238,9 @@ tbody tr:last-child td { border-bottom: 0; }
   padding: 8px 9px;
 }
 .privacy-dot { width: 6px; height: 6px; margin-top: 3px; border-radius: 50%; background: var(--green); box-shadow: 0 0 7px rgba(60, 225, 177, 0.45); }
+.provider-privacy-note.insecure { border-color: rgba(255, 173, 103, 0.22); }
+.provider-privacy-note.insecure .privacy-dot { background: var(--orange); box-shadow: 0 0 7px rgba(255, 173, 103, 0.45); }
+.provider-privacy-note.insecure p { color: #c89a73; }
 .provider-privacy-note p,
 .hosted-model-note p { margin: 0; color: #5e748a; font-size: 6.5px; line-height: 1.45; }
 .hosted-model-note { padding: 9px; }
